@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Android</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            position: relative;
+            width: {{ cols * tile_w }}px;
+            height: {{ rows * tile_h }}px;
+        }
+        .background {
+            display: block;
+            width: 100%;
+            height: auto;
+        }
+        table.grid {
+            position: absolute;
+            top: 0;
+            left: 0;
+            border-collapse: collapse;
+        }
+        table.grid td {
+            padding: 0;
+            margin: 0;
+        }
+        table.grid a {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Background image -->
+        <img src="{{ url_for('static', filename='android/screenshot.jpg') }}" alt="Android Screen" class="background">
+
+        <!-- Stage 1: select row -->
+        {% if selected_row is none %}
+        <table class="grid">
+            {% for r in range(rows) %}
+            <tr>
+                <td colspan="{{ cols }}" style="width: {{ cols * tile_w }}px; height: {{ tile_h }}px;">
+                    <a href="{{ url_for('android', row=r) }}"></a>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+
+        {% else %}
+        <!-- Stage 2: Highlight previously selected row -->
+        <table class="grid" style="position: absolute; top: {{ selected_row * tile_h }}px; left: 0; border-collapse: collapse; pointer-events: none;">
+            <tr>
+                <td colspan="{{ cols }}" style="width: {{ cols * tile_w }}px; height: {{ tile_h }}px; background-color: rgba(0, 255, 0, 0.3); border: 2px solid rgba(0, 255, 0, 0.5);">
+                </td>
+            </tr>
+        </table>
+        
+        <!-- Stage 2: select column in selected row -->
+        <table class="grid" style="top: 0; left: 0; position: absolute;">
+            <tr>
+                {% for c in range(cols) %}
+                <td style="width: {{ tile_w }}px; height: {{ rows * tile_h }}px;">
+                    <a href="{{ url_for('android', row=selected_row, col=c) }}"></a>
+                </td>
+                {% endfor %}
+            </tr>
+        </table>
+        {% endif %}
+    </div>
+</body>
+</html>
+
